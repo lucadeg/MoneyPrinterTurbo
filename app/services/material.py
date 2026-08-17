@@ -334,11 +334,7 @@ def search_videos_pexels(
             for video in video_files:
                 w = int(video["width"])
                 h = int(video["height"])
-                if (
-                    _matches_video_aspect(w, h, aspect)
-                    and w == video_width
-                    and h == video_height
-                ):
+                if _matches_video_aspect(w, h, aspect) and h >= 720:
                     item = MaterialInfo()
                     item.provider = "pexels"
                     item.url = video["link"]
@@ -871,6 +867,14 @@ def download_videos(
                 f"provider={item.provider}, error={type(e).__name__}, "
                 f"detail={_redact_request_error(e, item.url)}"
             )
+    if not video_paths:
+        local_dir = utils.storage_dir("local_videos", create=True)
+        if os.path.exists(local_dir):
+            for fname in os.listdir(local_dir):
+                if fname.lower().endswith(('.mp4', '.mov', '.mkv', '.avi')):
+                    video_paths.append(os.path.join(local_dir, fname))
+        logger.info(f"Fallback to {len(video_paths)} local stock clips")
+
     logger.success(f"downloaded {len(video_paths)} videos")
     _persist_material_sources(task_id, material_sources)
     return video_paths
@@ -976,6 +980,14 @@ def _download_videos_by_script_order(
         if not has_candidate:
             break
         candidate_index += 1
+
+    if not video_paths:
+        local_dir = utils.storage_dir("local_videos", create=True)
+        if os.path.exists(local_dir):
+            for fname in os.listdir(local_dir):
+                if fname.lower().endswith(('.mp4', '.mov', '.mkv', '.avi')):
+                    video_paths.append(os.path.join(local_dir, fname))
+        logger.info(f"Fallback to {len(video_paths)} local stock clips")
 
     logger.success(f"downloaded {len(video_paths)} ordered videos")
     _persist_material_sources(task_id, material_sources)

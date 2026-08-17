@@ -4330,6 +4330,15 @@ def _render_application():
     # 如果后台任务正在使用配置，配置层会在任务结束时自动应用并落盘最新值。
     if not generation_submitted:
         _save_runtime_config()
+    # ── Channel & Distribution Studio (below generator) ─────────────────────
+    st.markdown("---")
+    try:
+        from webui import channel_studio
+        channel_studio.render()
+    except Exception as _cs_err:
+        import traceback
+        st.error(f"⚠️ Channel Studio error: {_cs_err}")
+        st.code(traceback.format_exc())
 
 
 _render_application()

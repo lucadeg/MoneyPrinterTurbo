@@ -42,3 +42,26 @@ htmlcov/
 .codegraph
 /docs/superpowers
 .understand-anything
+
+
+# --- HERMES SECURITY & DATA GUARD ---
+*.env
+.env
+.env.*
+*client_secret*.json
+*credentials*.json
+*service_account*.json
+*token*.json
+*.pem
+*.key
+*.p12
+*.pfx
+data/
+**/data/
+gdrive_staging/
+*.sqlite
+*.db
+!*.prisma
+!schema.prisma
+!migrations/
+!*.sql
